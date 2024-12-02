@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/firebase';
 import { CV } from '../types/cv';
-import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -73,5 +73,31 @@ export const updateCV = async (req: AuthenticatedRequest, res: Response) => {
   } catch (error) {
     console.error('Error updating CV:', error);
     return res.status(500).json({ error: 'Failed to update CV' });
+  }
+};
+
+export const getCandidateCV = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const cvsRef = collection(db, 'cvs');
+    const q = query(cvsRef, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return res.status(404).json({ error: 'CV not found' });
+    }
+
+    const cvDoc = querySnapshot.docs[0];
+    return res.status(200).json({
+      id: cvDoc.id,
+      ...cvDoc.data()
+    });
+  } catch (error) {
+    console.error('Error getting candidate CV:', error);
+    return res.status(500).json({ error: 'Failed to get CV' });
   }
 }; 

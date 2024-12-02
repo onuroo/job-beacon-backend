@@ -4,8 +4,6 @@ import { db } from '../config/firebase';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '../types/user';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const TOKEN_EXPIRY = process.env.TOKEN_EXPIRY || '24h';
@@ -32,14 +30,20 @@ export const createUser = async (req: Request, res: Response) => {
       });
     }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const firebaseUser = userCredential.user;
-
     const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      return res.status(400).json({ error: 'Bu email adresi zaten kayıtlı' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await addDoc(usersRef, {
       email,
+      password: hashedPassword,
       role,
-      firebaseUid: firebaseUser.uid,
       createdAt: new Date()
     });
 
@@ -57,9 +61,6 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const firebaseUser = userCredential.user;
-
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
@@ -70,6 +71,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
+
+    const isPasswordValid = await bcrypt.compare(password, userData.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Email veya şifre hatalı' });
+    }
 
     const token = jwt.sign({ userId: userDoc.id }, JWT_SECRET, {
       expiresIn: TOKEN_EXPIRY,

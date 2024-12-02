@@ -121,16 +121,16 @@
                     "key": "Authorization",
                     "value": "Bearer {{token}}",
                     "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+90 555 123 4567\",\n    \"address\": \"Kadıköy, Istanbul, Turkey\"\n  },\n  \"education\": [\n    {\n      \"schoolName\": \"Istanbul Technical University\",\n      \"degree\": \"Bachelor's\",\n      \"fieldOfStudy\": \"Computer Engineering\",\n      \"startDate\": \"2015-09-01\",\n      \"endDate\": \"2019-06-30\",\n      \"current\": false\n    },\n    {\n      \"schoolName\": \"Bogazici University\",\n      \"degree\": \"Master's\",\n      \"fieldOfStudy\": \"Software Engineering\",\n      \"startDate\": \"2019-09-01\",\n      \"current\": true\n    }\n  ],\n  \"experience\": [\n    {\n      \"companyName\": \"Tech Corp\",\n      \"position\": \"Senior Software Developer\",\n      \"startDate\": \"2021-03-01\",\n      \"current\": true,\n      \"description\": \"Leading the frontend team, implementing microservices architecture, mentoring junior developers\"\n    },\n    {\n      \"companyName\": \"StartupX\",\n      \"position\": \"Software Developer\",\n      \"startDate\": \"2019-07-01\",\n      \"endDate\": \"2021-02-28\",\n      \"current\": false,\n      \"description\": \"Developed full-stack applications using React, Node.js, and AWS\"\n    }\n  ],\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\",\n    \"Docker\",\n    \"Kubernetes\",\n    \"MongoDB\",\n    \"PostgreSQL\",\n    \"System Design\"\n  ]\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
+                  "raw": "{\n  \"title\": \"Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+90 555 123 4567\",\n    \"address\": \"Kadıköy, Istanbul, Turkey\"\n  },\n  \"education\": [\n    {\n      \"schoolName\": \"Istanbul Technical University\",\n      \"degree\": \"Bachelor's\",\n      \"fieldOfStudy\": \"Computer Engineering\",\n      \"startDate\": \"2015-09-01\",\n      \"endDate\": \"2019-06-30\",\n      \"current\": false\n    }\n  ],\n  \"experience\": [\n    {\n      \"companyName\": \"Tech Corp\",\n      \"position\": \"Senior Software Developer\",\n      \"startDate\": \"2021-03-01\",\n      \"current\": true,\n      \"description\": \"Leading the frontend team, implementing microservices architecture\"\n    }\n  ],\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\"\n  ]\n}"
                 },
                 "url": "{{baseUrl}}/api/cv"
               }
@@ -149,18 +149,37 @@
                     "key": "Authorization",
                     "value": "Bearer {{token}}",
                     "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"Updated Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"phone\": \"+90 555 987 6543\",\n    \"address\": \"Besiktas, Istanbul, Turkey\"\n  },\n  \"experience\": [\n    {\n      \"companyName\": \"Tech Corp\",\n      \"position\": \"Lead Software Developer\",\n      \"startDate\": \"2021-03-01\",\n      \"current\": true,\n      \"description\": \"Promoted to lead position. Managing a team of 8 developers, implementing microservices architecture, leading technical decisions\"\n    }\n  ],\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\",\n    \"Docker\",\n    \"Kubernetes\",\n    \"MongoDB\",\n    \"PostgreSQL\",\n    \"System Design\",\n    \"Team Leadership\",\n    \"Agile Management\"\n  ]\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
+                  "raw": "{\n  \"title\": \"Updated Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"phone\": \"+90 555 987 6543\",\n    \"address\": \"Besiktas, Istanbul, Turkey\"\n  },\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\",\n    \"System Design\"\n  ]\n}"
                 },
                 "url": "{{baseUrl}}/api/cv/{{cvId}}"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Candidate CV",
+          "item": [
+            {
+              "name": "Get My CV",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": "{{baseUrl}}/api/cv/me"
               }
             }
           ]
