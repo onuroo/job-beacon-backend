@@ -1,143 +1,180 @@
 {
   "info": {
-    "name": "JobBeacon Auth",
+    "name": "JobBeacon-Auth",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Register - Recruiter",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register - Recruiter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"recruiter@example.com\",\n    \"password\": \"123456\",\n    \"role\": \"recruiter\"\n}"
+            }
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/register",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "register"]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"recruiter@example.com\",\n    \"password\": \"123456\",\n    \"role\": \"recruiter\"\n}"
-        }
-      }
-    },
-    {
-      "name": "Register - Candidate",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Register - Candidate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"candidate@example.com\",\n    \"password\": \"123456\",\n    \"role\": \"candidate\"\n}"
+            }
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/register",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "register"]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"candidate@example.com\",\n    \"password\": \"123456\",\n    \"role\": \"candidate\"\n}"
-        }
-      }
-    },
-    {
-      "name": "Login - Recruiter",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"candidate@example.com\",\n    \"password\": \"123456\"\n}"
+            }
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "login"]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"recruiter@example.com\",\n    \"password\": \"123456\"\n}"
-        }
-      }
-    },
-    {
-      "name": "Login - Candidate",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
           }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "login"]
         },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"candidate@example.com\",\n    \"password\": \"123456\"\n}"
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
         }
-      }
+      ]
     },
     {
-      "name": "Get User Profile",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{auth_token}}"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/me",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "me"]
+      "name": "CV Services",
+      "item": [
+        {
+          "name": "Create CV Service",
+          "item": [
+            {
+              "name": "Create CV",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+90 555 123 4567\",\n    \"address\": \"Kadıköy, Istanbul, Turkey\"\n  },\n  \"education\": [\n    {\n      \"schoolName\": \"Istanbul Technical University\",\n      \"degree\": \"Bachelor's\",\n      \"fieldOfStudy\": \"Computer Engineering\",\n      \"startDate\": \"2015-09-01\",\n      \"endDate\": \"2019-06-30\",\n      \"current\": false\n    },\n    {\n      \"schoolName\": \"Bogazici University\",\n      \"degree\": \"Master's\",\n      \"fieldOfStudy\": \"Software Engineering\",\n      \"startDate\": \"2019-09-01\",\n      \"current\": true\n    }\n  ],\n  \"experience\": [\n    {\n      \"companyName\": \"Tech Corp\",\n      \"position\": \"Senior Software Developer\",\n      \"startDate\": \"2021-03-01\",\n      \"current\": true,\n      \"description\": \"Leading the frontend team, implementing microservices architecture, mentoring junior developers\"\n    },\n    {\n      \"companyName\": \"StartupX\",\n      \"position\": \"Software Developer\",\n      \"startDate\": \"2019-07-01\",\n      \"endDate\": \"2021-02-28\",\n      \"current\": false,\n      \"description\": \"Developed full-stack applications using React, Node.js, and AWS\"\n    }\n  ],\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\",\n    \"Docker\",\n    \"Kubernetes\",\n    \"MongoDB\",\n    \"PostgreSQL\",\n    \"System Design\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{baseUrl}}/api/cv"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update CV Service",
+          "item": [
+            {
+              "name": "Update CV",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Senior Software Developer CV\",\n  \"personalInfo\": {\n    \"phone\": \"+90 555 987 6543\",\n    \"address\": \"Besiktas, Istanbul, Turkey\"\n  },\n  \"experience\": [\n    {\n      \"companyName\": \"Tech Corp\",\n      \"position\": \"Lead Software Developer\",\n      \"startDate\": \"2021-03-01\",\n      \"current\": true,\n      \"description\": \"Promoted to lead position. Managing a team of 8 developers, implementing microservices architecture, leading technical decisions\"\n    }\n  ],\n  \"skills\": [\n    \"JavaScript\",\n    \"TypeScript\",\n    \"React\",\n    \"Node.js\",\n    \"AWS\",\n    \"Docker\",\n    \"Kubernetes\",\n    \"MongoDB\",\n    \"PostgreSQL\",\n    \"System Design\",\n    \"Team Leadership\",\n    \"Agile Management\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{baseUrl}}/api/cv/{{cvId}}"
+              }
+            }
+          ]
         }
-      }
-    },
-    {
-      "name": "Logout",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{auth_token}}"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/auth/logout",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["auth", "logout"]
-        }
-      }
+      ]
     }
   ],
   "variable": [
     {
-      "key": "auth_token",
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
       "value": "your_jwt_token_here"
     }
   ]

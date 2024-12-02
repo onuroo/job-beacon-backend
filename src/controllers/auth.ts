@@ -4,8 +4,18 @@ import { db } from '../config/firebase';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '../types/user';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const TOKEN_EXPIRY = process.env.TOKEN_EXPIRY || '24h';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    userId: string;
+    email?: string;
+  };
+}
 
 export const createUser = async (req: Request, res: Response) => {
   try {
@@ -22,20 +32,14 @@ export const createUser = async (req: Request, res: Response) => {
       });
     }
 
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const firebaseUser = userCredential.user;
+
     const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      return res.status(400).json({ error: 'Bu email adresi zaten kayıtlı' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     await addDoc(usersRef, {
       email,
-      password: hashedPassword,
       role,
+      firebaseUid: firebaseUser.uid,
       createdAt: new Date()
     });
 
@@ -53,6 +57,9 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const firebaseUser = userCredential.user;
+
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
@@ -64,19 +71,22 @@ export const loginUser = async (req: Request, res: Response) => {
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
 
-    const isPasswordValid = await bcrypt.compare(password, userData.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Email veya şifre hatalı' });
-    }
-
     const token = jwt.sign({ userId: userDoc.id }, JWT_SECRET, {
-      expiresIn: '24h',
+      expiresIn: TOKEN_EXPIRY,
     });
 
-    res.json({ token });
+    res.json({ 
+      token,
+      expiresIn: TOKEN_EXPIRY,
+      user: {
+        id: userDoc.id,
+        email: userData.email,
+        role: userData.role
+      }
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Bir hata oluştu' });
+    console.error('Login Error:', error);
+    res.status(500).json({ error: 'Giriş yapılırken bir hata oluştu' });
   }
 };
 
@@ -84,9 +94,12 @@ export const logoutUser = async (req: Request, res: Response) => {
   res.json({ message: 'Başarıyla çıkış yapıldı' });
 };
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { userId } = req.user;
+    const { userId } = req.user || {};
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     const usersRef = collection(db, 'users');
     const userDoc = await getDocs(query(usersRef, where('__name__', '==', userId)));
 
